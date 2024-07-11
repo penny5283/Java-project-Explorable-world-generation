@@ -2,20 +2,6 @@ package tileengine;
 
 import java.awt.Color;
 
-/**
- * Contains constant tile objects, to avoid having to remake the same tiles in different parts of
- * the code.
- *
- * You are free to (and encouraged to) create and add your own tiles to this file. This file will
- * be turned in with the rest of your code.
- *
- * Ex:
- *      world[x][y] = Tileset.FLOOR;
- *
- * The style checker may crash when you try to style check this file due to use of unicode
- * characters. This is OK.
- */
-
 public class Tileset {
     public static final TETile AVATAR = new TETile('@', Color.white, Color.black, "you", 0);
     public static final TETile WALL = new TETile('#', new Color(216, 128, 128), Color.darkGray,
@@ -34,6 +20,8 @@ public class Tileset {
     public static final TETile TREE = new TETile('♠', Color.green, Color.black, "tree", 11);
 
     public static final TETile CELL = new TETile('█', Color.white, Color.black, "cell", 12);
+    public static final TETile COIN = new TETile('C', Color.yellow, Color.black, "coin", 13);
+    public static final TETile MONSTER = new TETile('M', Color.red, Color.black, "monster", 14);
+    public static final TETile NPC = new TETile('N', Color.blue, Color.black, "npc", 15);
+    public static final TETile KEY = new TETile('K', Color.orange, Color.black, "key", 16);
 }
-
-

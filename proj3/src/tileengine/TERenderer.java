@@ -1,6 +1,6 @@
 package tileengine;
 
-import edu.princeton.cs.algs4.StdDraw;
+import edu.princeton.cs.introcs.StdDraw;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -18,15 +18,7 @@ public class TERenderer {
     private int xOffset;
     private int yOffset;
 
-    /**
-     * Same functionality as the other initialization method. The only difference is that the xOff
-     * and yOff parameters will change where the renderFrame method starts drawing. For example,
-     * if you select w = 60, h = 30, xOff = 3, yOff = 4 and then call renderFrame with a
-     * TETile[50][25] array, the renderer will leave 3 tiles blank on the left, 7 tiles blank
-     * on the right, 4 tiles blank on the bottom, and 1 tile blank on the top.
-     * @param w width of the window in tiles
-     * @param h height of the window in tiles.
-     */
+
     public void initialize(int w, int h, int xOff, int yOff) {
         this.width = w;
         this.height = h;

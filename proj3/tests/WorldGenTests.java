@@ -1,28 +1,54 @@
 import core.AutograderBuddy;
-import edu.princeton.cs.algs4.StdDraw;
-import org.junit.jupiter.api.Test;
+import edu.princeton.cs.introcs.StdDraw;
 import tileengine.TERenderer;
 import tileengine.TETile;
 
 public class WorldGenTests {
-    @Test
-    public void basicTest() {
-        // put different seeds here to test different worlds
-        TETile[][] tiles = AutograderBuddy.getWorldFromInput("n1234567890123456789s");
+    public static void main(String[] args) {
+        System.out.println("Running basicTest...");
+        basicTest();
+        System.out.println("Running basicInteractivityTest...");
+        basicInteractivityTest();
+        System.out.println("Running basicSaveTest...");
+        basicSaveTest();
+    }
 
+    public static void basicTest() {
+        // Generate a new world and render it
+        TETile[][] world = AutograderBuddy.generateWorld(80, 30);
         TERenderer ter = new TERenderer();
-        ter.initialize(tiles.length, tiles[0].length);
-        ter.renderFrame(tiles);
-        StdDraw.pause(5000); // pause for 5 seconds so you can see the output
+        ter.initialize(world.length, world[0].length);
+        ter.renderFrame(world);
+        StdDraw.pause(5000); // Pause for 5 seconds to inspect the output
     }
 
-    @Test
-    public void basicInteractivityTest() {
-        // TODO: write a test that uses an input like "n123swasdwasd"
+    public static void basicInteractivityTest() {
+        // Generate a new world and simulate user inputs
+        TETile[][] world = AutograderBuddy.generateWorld(80, 30);
+        TERenderer ter = new TERenderer();
+        ter.initialize(world.length, world[0].length);
+
+        // Simulate user inputs
+        AutograderBuddy.moveAvatar(world, 'w');
+        AutograderBuddy.moveAvatar(world, 'a');
+        AutograderBuddy.moveAvatar(world, 's');
+        AutograderBuddy.moveAvatar(world, 'd');
+
+        // Render the resulting world
+        ter.renderFrame(world);
+        StdDraw.pause(5000); // Pause for 5 seconds to inspect the output
     }
 
-    @Test
-    public void basicSaveTest() {
-        // TODO: write a test that calls getWorldFromInput twice, with "n123swasd:q" and with "lwasd"
+    public static void basicSaveTest() {
+        // Generate a new world and save it
+        TETile[][] world = AutograderBuddy.generateWorld(80, 30);
+        AutograderBuddy.saveWorld();
+
+        // Load the saved world and render it
+        world = AutograderBuddy.loadWorld();
+        TERenderer ter = new TERenderer();
+        ter.initialize(world.length, world[0].length);
+        ter.renderFrame(world);
+        StdDraw.pause(5000); // Pause for 5 seconds to inspect the output
     }
 }
