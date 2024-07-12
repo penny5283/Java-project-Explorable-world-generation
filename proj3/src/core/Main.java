@@ -3,9 +3,9 @@ package core;
 import edu.princeton.cs.introcs.StdDraw;
 import tileengine.TERenderer;
 import tileengine.TETile;
+import tileengine.Tileset;
 
-import java.awt.Font;
-import java.awt.Color;
+import java.awt.Font; 
 import java.awt.event.KeyEvent;
 
 public class Main {
@@ -17,8 +17,6 @@ public class Main {
     private static boolean needsRedraw = true;
     private static boolean inMainMenu = true;
     private static boolean gameOver = false;
-    private static long messageDisplayTime = 0;
-    private static final long MESSAGE_DURATION = 3000; // Display message for 3 seconds
 
     public static void main(String[] args) {
         ter.initialize(WIDTH, HEIGHT);
@@ -63,6 +61,8 @@ public class Main {
     private static void handleMainMenuInput(char key) {
         System.out.println("Handling main menu input: " + key);
         if (key == 'n' || key == 'N') {
+            AutograderBuddy.resetLives();
+            AutograderBuddy.resetCollectedItems();
             world = AutograderBuddy.generateWorld(WIDTH, HEIGHT);
             inMainMenu = false;
             isPaused = false;
@@ -71,6 +71,8 @@ public class Main {
         } else if (key == 'l' || key == 'L') {
             world = AutograderBuddy.loadWorld();
             if (world == null) {
+                AutograderBuddy.resetLives();
+                AutograderBuddy.resetCollectedItems();
                 world = AutograderBuddy.generateWorld(WIDTH, HEIGHT);
             }
             inMainMenu = false;
@@ -111,11 +113,9 @@ public class Main {
         StdDraw.text(WIDTH / 2, HEIGHT / 2 + 2, "New Game (N)");
         StdDraw.text(WIDTH / 2, HEIGHT / 2, "Load Game (L)");
         StdDraw.text(WIDTH / 2, HEIGHT / 2 - 2, "Quit (Q)");
-        StdDraw.text(WIDTH / 2, HEIGHT / 2 - 4, "Try to survive as many worlds as possible!");
         StdDraw.text(WIDTH / 2, HEIGHT / 2 - 6, "Avoid monsters while collecting flowers to increase lives.");
         StdDraw.text(WIDTH / 2, HEIGHT / 2 - 8, "Use W/A/S/D to move.");
         StdDraw.text(WIDTH / 2, HEIGHT / 2 - 10, "Press ESC to pause the game.");
-        StdDraw.text(WIDTH / 2, HEIGHT / 2 - 12, "Step on the vortex '✹' to be transported to a new world.");
         StdDraw.show();
         System.out.println("Main menu displayed.");
     }
@@ -140,7 +140,7 @@ public class Main {
         StdDraw.setFont(new Font("SansSerif", Font.BOLD, 24));
         StdDraw.text(WIDTH / 2, HEIGHT / 2, "Game Over");
         StdDraw.show();
-        StdDraw.pause(2000); // Show the Game Over screen for 2 seconds
+        StdDraw.pause(2000); 
         showMainMenu();
         inMainMenu = true;
         gameOver = false;
@@ -149,6 +149,8 @@ public class Main {
     private static void handlePauseMenuInput(char key) {
         System.out.println("Handling pause menu input: " + key);
         if (key == 'n' || key == 'N') {
+            AutograderBuddy.resetLives();
+            AutograderBuddy.resetCollectedItems();
             world = AutograderBuddy.generateWorld(WIDTH, HEIGHT);
             isPaused = false;
             gameOver = false;
@@ -156,6 +158,8 @@ public class Main {
         } else if (key == 'l' || key == 'L') {
             world = AutograderBuddy.loadWorld();
             if (world == null) {
+                AutograderBuddy.resetLives();
+                AutograderBuddy.resetCollectedItems();
                 world = AutograderBuddy.generateWorld(WIDTH, HEIGHT);
             }
             isPaused = false;
@@ -166,7 +170,7 @@ public class Main {
             StdDraw.setPenColor(StdDraw.WHITE);
             StdDraw.text(WIDTH / 2, HEIGHT / 2 - 6, "Game Saved!");
             StdDraw.show();
-            StdDraw.pause(1000); // Show the saved message for 1 second
+            StdDraw.pause(1000); 
             System.out.println("Game saved.");
         } else if (key == 'q' || key == 'Q') {
             System.out.println("Quitting game.");
@@ -191,17 +195,13 @@ public class Main {
             StdDraw.textLeft(1, HEIGHT - 2, "Lives: " + AutograderBuddy.getLives());
 
             // Draw an arrow above the avatar
-            StdDraw.setPenColor(new Color(138, 43, 226)); // Light indigo color
-            StdDraw.text(AutograderBuddy.getAvatarX() + 0.5, AutograderBuddy.getAvatarY() + 1.5, "↑");
+            StdDraw.setPenColor(StdDraw.YELLOW); 
+            StdDraw.text(AutograderBuddy.getAvatarX() + 0.5, AutograderBuddy.getAvatarY() + 1.5, "▲");
 
-            // Show the transition message if there is one and it's within the duration
-            if (AutograderBuddy.getMessage() != null && !AutograderBuddy.getMessage().isEmpty()) {
-                if (System.currentTimeMillis() - messageDisplayTime < MESSAGE_DURATION) {
-                    StdDraw.setPenColor(Color.YELLOW);
-                    StdDraw.text(WIDTH / 2, HEIGHT - 3, AutograderBuddy.getMessage());
-                } else {
-                    AutograderBuddy.clearMessage();
-                }
+            if (!AutograderBuddy.getMessage().isEmpty()) {
+                StdDraw.setPenColor(StdDraw.RED);
+                StdDraw.text(WIDTH / 2, HEIGHT - 2, AutograderBuddy.getMessage());
+                AutograderBuddy.clearMessage();
             }
         }
         StdDraw.show();

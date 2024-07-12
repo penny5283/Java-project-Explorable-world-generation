@@ -22,39 +22,37 @@ public class AutograderBuddy {
     private static String message = "";
 
     public static TETile[][] generateWorld(int width, int height) {
-        TETile[][] newWorld = new TETile[width][height];
+        world = new TETile[width][height];
 
         // Initialize world with nothing
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                newWorld[x][y] = Tileset.NOTHING;
+                world[x][y] = Tileset.NOTHING;
             }
         }
 
         // Generate rooms and corridors
-        ArrayList<Rectangle> rooms = generateRooms(newWorld, width, height);
-        generateCorridors(newWorld, rooms);
+        ArrayList<Rectangle> rooms = generateRooms(world, width, height);
+        generateCorridors(world, rooms);
 
         // Add walls around the rooms and corridors
-        addWalls(newWorld);
+        addWalls(world);
 
         // Place avatar in the center of a random room
         Rectangle avatarRoom = rooms.get(RandomUtils.uniform(RANDOM, rooms.size()));
         avatarX = avatarRoom.x + avatarRoom.width / 2;
         avatarY = avatarRoom.y + avatarRoom.height / 2;
-        newWorld[avatarX][avatarY] = Tileset.AVATAR;
+        world[avatarX][avatarY] = Tileset.AVATAR;
 
         // Add decorations outside the walkable area
-        addDecorations(newWorld, width, height);
+        addDecorations(world, width, height);
 
         // Place items within the walkable area
-        placeItems(newWorld);
+        placeItems(world);
 
-        placeMonsters(newWorld, rooms);
+        placeMonsters(world, rooms);
 
-        addVortex(newWorld);
-
-        return newWorld;
+        return world;
     }
 
     private static ArrayList<Rectangle> generateRooms(TETile[][] world, int width, int height) {
@@ -226,60 +224,12 @@ public class AutograderBuddy {
                 if (lives <= 0) {
                     return;
                 }
-            } else if (world[newX][newY] == Tileset.UNLOCKED_DOOR) {
-                transitioning = true;
-                setMessage("You were transported to a new world!");
-                transitionToNewWorld();
-                return;
             }
 
             world[avatarX][avatarY] = Tileset.FLOOR;
             avatarX = newX;
             avatarY = newY;
             world[avatarX][avatarY] = Tileset.AVATAR;
-        }
-    }
-
-    private static void transitionToNewWorld() {
-        System.out.println("Transitioning to new world...");
-        clearCurrentWorld();
-        generateNewWorld();
-        System.out.println("New world generated.");
-        transitioning = false;
-    }
-
-    private static void clearCurrentWorld() {
-        if (world != null) {
-            for (int x = 0; x < world.length; x++) {
-                for (int y = 0; y < world[0].length; y++) {
-                    world[x][y] = Tileset.NOTHING;
-                }
-            }
-        }
-        monsters.clear();
-    }
-
-    private static void generateNewWorld() {
-        world = generateWorld(world.length, world[0].length);
-        avatarX = -1;
-        avatarY = -1;
-        placeAvatarInNewWorld();
-    }
-
-    private static void placeAvatarInNewWorld() {
-        boolean placed = false;
-        for (int x = 0; x < world.length; x++) {
-            for (int y = 0; y < world[0].length; y++) {
-                if (world[x][y] == Tileset.AVATAR) {
-                    avatarX = x;
-                    avatarY = y;
-                    placed = true;
-                    break;
-                }
-            }
-            if (placed) {
-                break;
-            }
         }
     }
 
@@ -325,11 +275,6 @@ public class AutograderBuddy {
         return lives;
     }
 
-    public static void resetGameStats() {
-        collectedItems = 0;
-        lives = 1;
-    }
-
     public static void saveWorld() {
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(SAVE_FILE))) {
             out.writeObject(world);
@@ -357,6 +302,14 @@ public class AutograderBuddy {
         }
     }
 
+    public static void resetCollectedItems() {
+        collectedItems = 0;
+    }
+
+    public static void resetLives() {
+        lives = 1;
+    }
+
     public static int getAvatarX() {
         return avatarX;
     }
@@ -365,30 +318,11 @@ public class AutograderBuddy {
         return avatarY;
     }
 
-    public static boolean isTransitioning() {
-        return transitioning;
-    }
-
     public static String getMessage() {
         return message;
     }
 
-    public static void setMessage(String msg) {
-        message = msg;
-    }
-
     public static void clearMessage() {
         message = "";
-    }
-
-    private static void addVortex(TETile[][] world) {
-        int x = RandomUtils.uniform(RANDOM, world.length);
-        int y = RandomUtils.uniform(RANDOM, world[0].length);
-
-        while (world[x][y] != Tileset.FLOOR) {
-            x = RandomUtils.uniform(RANDOM, world.length);
-            y = RandomUtils.uniform(RANDOM, world[0].length);
-        }
-        world[x][y] = Tileset.UNLOCKED_DOOR;
     }
 }
